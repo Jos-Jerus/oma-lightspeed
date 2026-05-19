@@ -44,6 +44,7 @@ conn = None
 while elapsed < connect_timeout:
     attempt += 1
     try:
+        per_attempt_timeout = max(1, int(min(max_interval, connect_timeout - elapsed)))
         conn = psycopg2.connect(
             host=os.getenv("OMA_POSTGRES_HOST"),
             port=os.getenv("OMA_POSTGRES_PORT"),
@@ -51,6 +52,7 @@ while elapsed < connect_timeout:
             user=os.getenv("OMA_POSTGRES_USER"),
             password=os.getenv("OMA_POSTGRES_PASSWORD"),
             sslmode=os.getenv("LIGHTSPEED_STACK_POSTGRES_SSL_MODE", "disable"),
+            connect_timeout=per_attempt_timeout,
         )
         break
     except psycopg2.OperationalError as e:

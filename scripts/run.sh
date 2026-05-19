@@ -38,6 +38,11 @@ set -a
 source "$PROJECT_ROOT/.env"
 set +a
 
+if [[ -z "${GEMINI_API_KEY:-}" ]]; then
+    echo "Error: GEMINI_API_KEY is not set in .env" >&2
+    exit 1
+fi
+
 # Set default values for all pod variables (envsubst doesn't handle ${VAR:-default} syntax)
 export LIGHTSPEED_STACK_IMAGE="${LIGHTSPEED_STACK_IMAGE_OVERRIDE:-registry.redhat.io/lightspeed-core/lightspeed-stack-rhel9:0.4.1}"
 export OMA_MCP_IMAGE="${OMA_MCP_IMAGE:-localhost/oma-service-mcp:latest}"
@@ -50,7 +55,7 @@ cd "$PROJECT_ROOT"
 
 # Create Kubernetes secret for API keys (podman play kube supports secrets)
 echo "Creating secret for API keys..."
-podman play kube <(envsubst < "$PROJECT_ROOT/oma-secret.yaml") 2>/dev/null || true
+podman play kube --replace <(envsubst < "$PROJECT_ROOT/oma-secret.yaml")
 
 # Start the pod
 echo "Starting OMA Lightspeed pod..."
