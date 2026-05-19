@@ -6,11 +6,17 @@
 
 FROM registry.redhat.io/lightspeed-core/lightspeed-stack-rhel9:9.6-1776359478
 
-# Copy migration script (runs before lightspeed-stack starts)
+# Install Alembic for database migrations
+RUN python3.12 -m pip install --no-cache-dir --extra-index-url https://pypi.org/simple/ alembic
+
+# Copy migration framework and script
+COPY alembic.ini /app/alembic.ini
+COPY alembic/ /app/alembic/
 COPY migrate.py /app/migrate.py
 
 # Run migrations then start lightspeed-stack
-ENTRYPOINT ["/bin/sh", "-c", "python3.12 /app/migrate.py && python3.12 src/lightspeed_stack.py"]
+WORKDIR /app
+ENTRYPOINT ["/bin/sh", "-c", "python3.12 /app/migrate.py && cd /app-root && exec python3.12 src/lightspeed_stack.py"]
 
 USER 1001
 
