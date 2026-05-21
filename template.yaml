@@ -485,6 +485,8 @@ objects:
                 key: db.password
           - name: LIGHTSPEED_STACK_POSTGRES_SSL_MODE
             value: ${LIGHTSPEED_STACK_POSTGRES_SSL_MODE}
+          - name: HOME
+            value: "/tmp"
           resources:
             limits:
               memory: ${MEMORY_LIMIT}
