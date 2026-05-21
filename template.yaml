@@ -167,6 +167,7 @@ objects:
         library_client_config_path: "${LLAMA_CLIENT_CONFIG_PATH}"
       authentication:
         module: jwk-token
+        skip_for_health_probes: true
         jwk_config:
           url: ${SSO_BASE_URL}/protocol/openid-connect/certs
           jwt_configuration:
@@ -518,15 +519,13 @@ objects:
           - name: data-storage
             mountPath: ${STORAGE_MOUNT_PATH}
           livenessProbe:
-            httpGet:
-              path: /liveness
+            tcpSocket:
               port: ${{SERVICE_PORT}}
             initialDelaySeconds: 30
             periodSeconds: 10
             timeoutSeconds: 2
           readinessProbe:
-            httpGet:
-              path: /readiness
+            tcpSocket:
               port: ${{SERVICE_PORT}}
             initialDelaySeconds: 30
             periodSeconds: 10
