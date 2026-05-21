@@ -370,7 +370,7 @@ objects:
               user: ${env.OMA_POSTGRES_USER}
               password: ${env.OMA_POSTGRES_PASSWORD}
               ssl_mode: ${LLAMA_STACK_POSTGRES_SSL_MODE}
-                responses_store:
+            responses_store:
               type: postgres
               host: ${env.OMA_POSTGRES_HOST}
               port: ${env.OMA_POSTGRES_PORT}
