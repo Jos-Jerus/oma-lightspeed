@@ -519,15 +519,13 @@ objects:
           - name: data-storage
             mountPath: ${STORAGE_MOUNT_PATH}
           livenessProbe:
-            httpGet:
-              path: /liveness
+            tcpSocket:
               port: ${{SERVICE_PORT}}
             initialDelaySeconds: 30
             periodSeconds: 10
             timeoutSeconds: 2
           readinessProbe:
-            httpGet:
-              path: /readiness
+            tcpSocket:
               port: ${{SERVICE_PORT}}
             initialDelaySeconds: 30
             periodSeconds: 10
