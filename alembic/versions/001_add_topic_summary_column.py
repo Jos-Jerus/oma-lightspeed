@@ -15,10 +15,18 @@ depends_on = None
 
 
 def upgrade() -> None:
-    op.execute(
-        'ALTER TABLE "lightspeed-stack"."user_conversation" '
-        "ADD COLUMN IF NOT EXISTS topic_summary text"
+    conn = op.get_bind()
+    result = conn.execute(
+        op.inline_literal(
+            "SELECT EXISTS (SELECT 1 FROM information_schema.tables "
+            "WHERE table_schema = 'lightspeed-stack' AND table_name = 'user_conversation')"
+        )
     )
+    if result.scalar():
+        op.execute(
+            'ALTER TABLE "lightspeed-stack"."user_conversation" '
+            "ADD COLUMN IF NOT EXISTS topic_summary text"
+        )
 
 
 def downgrade() -> None:
