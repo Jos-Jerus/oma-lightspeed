@@ -23,7 +23,7 @@ parameters:
 
 # Deployment configuration
 - name: REPLICAS_COUNT
-  value: "1"
+  value: "2"
   description: "Number of pod replicas to deploy"
 - name: SERVICE_PORT
   value: "8080"
