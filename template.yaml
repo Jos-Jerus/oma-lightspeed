@@ -103,6 +103,15 @@ parameters:
   value: "gemini-2.5-flash"
   description: "Default LLM model to use"
 
+# Vertex AI configuration
+- name: VERTEX_AI_PROJECT
+  value: ""
+  required: true
+  description: "Google Cloud project ID for Vertex AI"
+- name: VERTEX_AI_LOCATION
+  value: "us-central1"
+  description: "Google Cloud region for Vertex AI"
+
 # Authentication configuration
 - name: SSO_BASE_URL
   value: "https://sso.redhat.com/auth/realms/redhat-external"
@@ -350,9 +359,12 @@ objects:
       providers:
         inference:
         - provider_id: gemini
-          provider_type: remote::gemini
+          provider_type: remote::vertexai
           config:
-            api_key: ${env.GEMINI_API_KEY:=dummy}
+            project: ${env.VERTEX_AI_PROJECT}
+            location: ${env.VERTEX_AI_LOCATION}
+            allowed_models:
+            - google/gemini-2.5-flash
         files:
         - provider_id: meta-reference-files
           provider_type: inline::localfs
@@ -462,6 +474,10 @@ objects:
             containerPort: ${{SERVICE_PORT}}
             protocol: TCP
           env:
+          - name: VERTEX_AI_PROJECT
+            value: ${VERTEX_AI_PROJECT}
+          - name: VERTEX_AI_LOCATION
+            value: ${VERTEX_AI_LOCATION}
           - name: GOOGLE_APPLICATION_CREDENTIALS
             value: /app-root/google-vertex-service-account.json
           - name: LLAMA_STACK_SQLITE_STORE_DIR
