@@ -567,6 +567,8 @@ objects:
     name: oma-lightspeed
     labels:
       app: oma-lightspeed
+    annotations:
+      haproxy.router.openshift.io/rewrite-target: /
   spec:
     host: ${ROUTE_HOST}
     path: ${ROUTE_PATH}
