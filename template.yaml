@@ -105,8 +105,7 @@ parameters:
 
 # Vertex AI configuration
 - name: VERTEX_AI_PROJECT
-  value: ""
-  required: true
+  value: "yossi-project-791333"
   description: "Google Cloud project ID for Vertex AI"
 - name: VERTEX_AI_LOCATION
   value: "us-central1"
