@@ -65,7 +65,7 @@ jobs:
               json.dump(data, f)
           print(f'Vertex AI SA written (project: {data.get(\"project_id\", \"unknown\")})')
           "
-          chmod 600 config/vertex-credentials.json
+          chmod 644 config/vertex-credentials.json
 
       - name: Generate config
         run: |
