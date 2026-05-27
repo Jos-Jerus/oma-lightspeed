@@ -65,7 +65,7 @@ jobs:
               json.dump(data, f)
           print(f'Vertex AI SA written (project: {data.get(\"project_id\", \"unknown\")})')
           "
-          chmod 644 config/vertex-credentials.json
+          chmod 600 config/vertex-credentials.json
 
       - name: Generate config
         run: |
@@ -81,6 +81,7 @@ jobs:
             (.registered_resources.models[0].provider_model_id) = "google/gemini-2.5-flash"
           ' config/llama_stack_client_config.yaml
           sed -i 's|default_model:.*|default_model: google/gemini-2.5-flash|' config/lightspeed-stack.yaml
+          sed -i 's|/data/|/tmp/sqlite/|g' config/lightspeed-stack.yaml config/llama_stack_client_config.yaml
 
       - name: Start MCP stub
         run: |
@@ -106,7 +107,7 @@ jobs:
         run: |
           VERTEX_PROJECT=$(grep VERTEXAI_PROJECT .env | cut -d= -f2)
           sed -i 's|http://localhost:8000/mcp|http://host.containers.internal:8000/mcp|g' config/lightspeed-stack.yaml config/llama_stack_client_config.yaml
-          podman run -d --name oma-lightspeed \
+          podman run -d --name oma-lightspeed --userns=keep-id \
             -p 8080:8080 \
             -v $(pwd)/config/lightspeed-stack.yaml:/app-root/lightspeed-stack.yaml:ro \
             -v $(pwd)/config/llama_stack_client_config.yaml:/app-root/llama_stack_client_config.yaml:ro \
